@@ -9,6 +9,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFirewallHelper;
 using Newtonsoft.Json.Linq;
 using ffxiv_act_installer.Extensions;
 
@@ -21,7 +22,7 @@ namespace ffxiv_act_installer
         {
             WebClient webclient = new WebClient();
             int selection;
-            var installpath = "C:/Program Files (x86)/Advanced Combat Tracker";
+            var installpath = @"C:\Program Files (x86)\Advanced Combat Tracker";
             var overlaypath = "overlay.zip";
             var cactbotpath = "cactbot.zip";
             var ffxivpluginpath = "FFXIV_ACT_Plugin.dll";
@@ -58,7 +59,7 @@ namespace ffxiv_act_installer
             Console.WriteLine("Downloading ACT...");
             try
             {
-                webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=56", "act.exe");
+                //webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=56", "act.exe");
                 Console.Clear();
                 Console.WriteLine("PLEASE UNINSTALL ACT IF IT'S INSTALLED BEFORE PROCEEDING.");
                 Console.WriteLine($"It is strongly recommended to install in the default location ({installpath})");
@@ -94,7 +95,7 @@ namespace ffxiv_act_installer
 
                 Console.WriteLine("Found ACT install!");
                 Console.Write("Fetching ffxiv plugin...");
-                webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=66", "FFXIV_ACT_Plugin.dll");
+                //webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=66", "FFXIV_ACT_Plugin.dll");
                 Console.Write("Done!");
                 Console.WriteLine();
                 File.Copy(ffxivpluginpath, $"{installpath}/{ffxivpluginpath}", true);
@@ -145,6 +146,40 @@ namespace ffxiv_act_installer
                     default:
                         break;
                 }
+
+                
+                var installexe = @"\Advanced Combat Tracker.exe";
+                var firewallpath = installpath + installexe;
+                var allRules = FirewallManager.Instance.Rules.ToArray();
+                if (allRules.Any(t => t.Name.Contains("ACT Inbound Rule") || t.Name.Contains("ACT Outbound Rule")))
+                {
+                    Console.WriteLine("Deleting old firewall exceptions...");
+                    var oldoutboundrule = allRules.FirstOrDefault(t => t.Name.Contains("ACT Outbound Rule"));
+                    var oldinboundrule = allRules.FirstOrDefault(t => t.Name.Contains("ACT Inbound Rule"));
+                    if (oldoutboundrule != null)
+                    {
+                        FirewallManager.Instance.Rules.Remove(oldoutboundrule);
+                    }
+
+                    if (oldinboundrule != null)
+                    {
+                        FirewallManager.Instance.Rules.Remove(oldinboundrule);
+                    }
+                }
+
+                Console.WriteLine("Adding firewall exceptions...");
+                var outboundrule = FirewallManager.Instance.CreateApplicationRule(
+                    FirewallManager.Instance.GetProfile().Type, @"ACT Outbound Rule",
+                    FirewallAction.Allow, @firewallpath);
+                outboundrule.Direction = FirewallDirection.Outbound;
+                FirewallManager.Instance.Rules.Add(outboundrule);
+
+                var inboundrule = FirewallManager.Instance.CreateApplicationRule(
+                    FirewallManager.Instance.GetProfile().Type, @"ACT Inbound Rule",
+                    FirewallAction.Allow, @firewallpath);
+                inboundrule.Direction = FirewallDirection.Inbound;
+                FirewallManager.Instance.Rules.Add(inboundrule);
+
                 Console.WriteLine("Installation complete! ACT will now run. Press any button to exit.");
                 Process.Start($"{installpath}/Advanced Combat Tracker.exe");
                 Console.ReadKey();
@@ -154,6 +189,8 @@ namespace ffxiv_act_installer
             catch (Exception e)
             {
                 Console.WriteLine($"An error has occurred: {e.Message}");
+                Console.WriteLine(e.InnerException);
+                Console.WriteLine(e.StackTrace);
                 Console.WriteLine("Press any key to exit");
                 Console.ReadKey();
             }
@@ -200,7 +237,7 @@ namespace ffxiv_act_installer
                             throw new ApplicationException("Could not retrieve github url.");
                         }
 
-                        webclient.DownloadFile(url, filename);
+                        //webclient.DownloadFile(url, filename);
                     }
                     catch (Exception e)
                     {

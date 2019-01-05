@@ -12,6 +12,8 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -87,6 +89,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsFirewallHelper, Version=1.4.6592.8627, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsFirewallHelper.1.4.6592.8627\lib\net35-client\WindowsFirewallHelper.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ZipArchiveExtensions.cs" />
@@ -109,4 +114,11 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\WindowsFirewallHelper.1.4.6592.8627\build\WindowsFirewallHelper.targets" Condition="Exists('..\packages\WindowsFirewallHelper.1.4.6592.8627\build\WindowsFirewallHelper.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\WindowsFirewallHelper.1.4.6592.8627\build\WindowsFirewallHelper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WindowsFirewallHelper.1.4.6592.8627\build\WindowsFirewallHelper.targets'))" />
+  </Target>
 </Project>
