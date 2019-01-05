@@ -5,7 +5,7 @@ By default, the installer:
 * Combines pet and owner damage
 * Simulates dot crits
 * Sets encounter culling to 30 seconds
-* Automatically finds and uses both the FFXIV_ACT_Plugin and the Overlay Plugin from Hibiysleep
+* Automatically finds and uses both the FFXIV_ACT_Plugin and the Overlay Plugin from Hibiyasleep
 
 If desired, Cactbot can also be installed, though the timeline is not set up by default.
 
