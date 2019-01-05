@@ -59,7 +59,7 @@ namespace ffxiv_act_installer
             Console.WriteLine("Downloading ACT...");
             try
             {
-                //webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=56", "act.exe");
+                webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=56", "act.exe");
                 Console.Clear();
                 Console.WriteLine("PLEASE UNINSTALL ACT IF IT'S INSTALLED BEFORE PROCEEDING.");
                 Console.WriteLine($"It is strongly recommended to install in the default location ({installpath})");
@@ -95,7 +95,7 @@ namespace ffxiv_act_installer
 
                 Console.WriteLine("Found ACT install!");
                 Console.Write("Fetching ffxiv plugin...");
-                //webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=66", "FFXIV_ACT_Plugin.dll");
+                webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=66", "FFXIV_ACT_Plugin.dll");
                 Console.Write("Done!");
                 Console.WriteLine();
                 File.Copy(ffxivpluginpath, $"{installpath}/{ffxivpluginpath}", true);
@@ -237,7 +237,7 @@ namespace ffxiv_act_installer
                             throw new ApplicationException("Could not retrieve github url.");
                         }
 
-                        //webclient.DownloadFile(url, filename);
+                        webclient.DownloadFile(url, filename);
                     }
                     catch (Exception e)
                     {
