@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<PluginConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsVisible>true</IsVisible>
+  <IsClickThru>false</IsClickThru>
+  <OverlayPosition>
+    <X>20</X>
+    <Y>20</Y>
+  </OverlayPosition>
+  <OverlaySize>
+    <Width>300</Width>
+    <Height>300</Height>
+  </OverlaySize>
+  <SortKey>encdps</SortKey>
+  <SortType>NumericDescending</SortType>
+  <Overlays>
+    <Overlay Type="RainbowMage.OverlayPlugin.Overlays.MiniParseOverlayConfig">
+      <MiniParseOverlayConfig>
+        <Name>Mini Parse</Name>
+        <IsVisible>true</IsVisible>
+        <IsClickThru>false</IsClickThru>
+        <Position>
+          <X>75</X>
+          <Y>22</Y>
+        </Position>
+        <Size>
+          <Width>500</Width>
+          <Height>300</Height>
+        </Size>
+        <Url>file:///C:/Program Files (x86)/Advanced Combat Tracker/OverlayPlugin/resources/miniparse.html</Url>
+        <MaxFrameRate>30</MaxFrameRate>
+        <GlobalHotkeyEnabled>false</GlobalHotkeyEnabled>
+        <GlobalHotkey>None</GlobalHotkey>
+        <GlobalHotkeyModifiers>None</GlobalHotkeyModifiers>
+        <GlobalHotkeyType>ToggleVisible</GlobalHotkeyType>
+        <IsLocked>false</IsLocked>
+        <SortKey>encdps</SortKey>
+        <SortType>NumericDescending</SortType>
+      </MiniParseOverlayConfig>
+    </Overlay>
+    <Overlay Type="RainbowMage.OverlayPlugin.Overlays.SpellTimerOverlayConfig">
+      <SpellTimerOverlayConfig>
+        <Name>Spell Timer</Name>
+        <IsVisible>false</IsVisible>
+        <IsClickThru>false</IsClickThru>
+        <Position>
+          <X>20</X>
+          <Y>520</Y>
+        </Position>
+        <Size>
+          <Width>200</Width>
+          <Height>300</Height>
+        </Size>
+        <Url>file:///C:/Program Files (x86)/Advanced Combat Tracker/OverlayPlugin/resources/spelltimer.html</Url>
+        <MaxFrameRate>5</MaxFrameRate>
+        <GlobalHotkeyEnabled>false</GlobalHotkeyEnabled>
+        <GlobalHotkey>None</GlobalHotkey>
+        <GlobalHotkeyModifiers>None</GlobalHotkeyModifiers>
+        <GlobalHotkeyType>ToggleVisible</GlobalHotkeyType>
+        <IsLocked>false</IsLocked>
+      </SpellTimerOverlayConfig>
+    </Overlay>
+  </Overlays>
+  <FollowLatestLog>false</FollowLatestLog>
+  <HideOverlaysWhenNotActive>false</HideOverlaysWhenNotActive>
+  <Version>0.3.4.0</Version>
+</PluginConfig>

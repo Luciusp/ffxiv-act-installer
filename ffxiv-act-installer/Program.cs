@@ -24,8 +24,8 @@ namespace ffxiv_act_installer
             var installpath = "C:/Program Files (x86)/Advanced Combat Tracker";
             var overlaypath = "overlay.zip";
             var cactbotpath = "cactbot.zip";
-            var rmagepath = "rainbow.zip";
             var ffxivpluginpath = "FFXIV_ACT_Plugin.dll";
+            var configpath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/Advanced Combat Tracker/Config";
             var architecture = "x64";
             if (!System.Environment.Is64BitOperatingSystem)
             {
@@ -34,10 +34,9 @@ namespace ffxiv_act_installer
 
             if (IsAdministrator())
             {
-                Console.WriteLine("Welcome to the FFXIV ACT Installer. Please select the installer package:");
-                Console.WriteLine("(1) Standard ACT (Rainbowmage) - recommended!");
+                Console.WriteLine("Welcome to the FFXIV ACT Installer. Please select an installer package:");
+                Console.WriteLine("(1) ACT + parse overlay - recommended");
                 Console.WriteLine("(2) ACT + Cactbot");
-                Console.WriteLine("(3) ACT, no overlay - for experts");
             }
 
             else
@@ -47,13 +46,12 @@ namespace ffxiv_act_installer
                 Environment.Exit(0);
             }
 
-            while (!int.TryParse(Console.ReadLine(), out selection) || selection > 3 || selection < 1)
+            while (!int.TryParse(Console.ReadLine(), out selection) || selection > 2 || selection < 1)
             {
                 Console.Clear();
-                Console.WriteLine("Welcome to the FFXIV ACT Installer. Please select the installer package:");
-                Console.WriteLine("(1) Standard ACT (Rainbowmage) - recommended!");
+                Console.WriteLine("Invalid option selected. Please select an installer package:");
+                Console.WriteLine("(1) ACT + parse overlay - recommended");
                 Console.WriteLine("(2) ACT + Cactbot");
-                Console.WriteLine("(3) ACT, no overlay - not recommended");
             }
             Console.Clear();
             Console.WriteLine();
@@ -67,10 +65,10 @@ namespace ffxiv_act_installer
                 Console.WriteLine("Please do not exit this screen until prompted.");
                 Console.WriteLine("Press any button to continue...");
                 Console.ReadKey();
-                Process.Start("act.exe");
                 Console.Clear();
-                Console.WriteLine("Press any key once the ACT installation is complete");
-                Console.ReadKey();
+                Console.WriteLine("Waiting for ACT installation to complete.");
+                var process = Process.Start("act.exe");
+                process.WaitForExit();
                 Console.Clear();
 
                 while (!Directory.Exists(installpath))
@@ -100,25 +98,30 @@ namespace ffxiv_act_installer
                 Console.Write("Done!");
                 Console.WriteLine();
                 File.Copy(ffxivpluginpath, $"{installpath}/{ffxivpluginpath}", true);
-                switch (selection)
+                Console.Write("Fetching Hibiyasleep overlay...");
+                FetchLatestGithubRelease(architecture, "https://api.github.com/repos/hibiyasleep/OverlayPlugin/releases/latest", "overlay.zip").Wait();
+                Console.Write("Done!");
+                Console.WriteLine();
+                Console.Write("Extracting overlay files...");
+                Directory.CreateDirectory($"{installpath}/OverlayPlugin/");
+                Directory.CreateDirectory(configpath);
+                var overlayarchive = new ZipArchive(new FileStream(overlaypath, FileMode.Open));
+                overlayarchive.ExtractToDirectory($"{installpath}/OverlayPlugin/", true);
+                Console.Write("Done!");
+                Console.WriteLine();
+                Console.WriteLine("Copying config files...");
+                var configfiles = Directory.GetFiles($"{Directory.GetCurrentDirectory()}/act-config", "*config.xml");
+                foreach (var config in configfiles)
                 {
-                    case 1:
-                        Console.Write("Fetching rainbowmage overlay...");
-                        
-                        return;
-                    case 2:
-                        Console.Write("Fetching hibiyasleep overlay...");
-                        FetchLatestGithubRelease(architecture, "https://api.github.com/repos/hibiyasleep/OverlayPlugin/releases/latest", "overlay.zip").Wait();
-                        Console.Write("Done!");
-                        Console.WriteLine();
-                        Console.Write("Extracting overlay files...");
-                        Directory.CreateDirectory($"{installpath}/OverlayPlugin/");
-                        var overlayarchive = new ZipArchive(new FileStream(overlaypath, FileMode.Open));
-                        overlayarchive.ExtractToDirectory($"{installpath}/OverlayPlugin/", true);
-                        Console.Write("Done!");
-                        Console.WriteLine();
+                    var dest = $"{configpath}/{config.Substring(config.LastIndexOf("\\"))}";
+                    File.Copy(config, dest, true);
+                }
 
-                        Console.Write("Fetching cactbot...");
+                switch (selection)
+                {       
+                    case 2:
+                        
+                        Console.Write("Fetching Cactbot...");
                         FetchLatestGithubRelease(architecture, "https://api.github.com/repos/quisquous/cactbot/releases/latest", "cactbot.zip").Wait();
                         Console.Write("Done!");
                         Console.WriteLine();
@@ -139,11 +142,11 @@ namespace ffxiv_act_installer
                         Console.Write("Done!");
                         Console.WriteLine();
                         break;
-                    case 3:
-                        
-                        return;
+                    default:
+                        break;
                 }
-                Console.WriteLine("Installation complete! Press any button to exit.");
+                Console.WriteLine("Installation complete! ACT will now run. Press any button to exit.");
+                Process.Start($"{installpath}/Advanced Combat Tracker.exe");
                 Console.ReadKey();
                 Environment.Exit(0);
 
@@ -190,10 +193,6 @@ namespace ffxiv_act_installer
                             {
                                 url = releaseurls.FirstOrDefault(t => t.Contains($"{architecture}-full"));
                             }
-                        }
-                        else if (repo.Contains("rainbow"))
-                        {
-                            url = releaseurls.FirstOrDefault(t => t.Contains(architecture));
                         }
                         
                         if (url == null)
