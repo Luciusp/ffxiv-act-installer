@@ -114,6 +114,9 @@ namespace ffxiv_act_installer
                 var configfiles = Directory.GetFiles($"{Directory.GetCurrentDirectory()}/act-config", "*config.xml");
                 foreach (var config in configfiles)
                 {
+                    string rawtext = File.ReadAllText(config);
+                    rawtext = rawtext.Replace("Luke", Environment.UserName); //replace author name with user's
+                    File.WriteAllText(config, rawtext);
                     var dest = $"{configpath}/{config.Substring(config.LastIndexOf("\\"))}";
                     File.Copy(config, dest, true);
                 }
