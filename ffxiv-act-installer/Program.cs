@@ -95,7 +95,7 @@ namespace ffxiv_act_installer
 
                 Console.WriteLine("Found ACT install!");
                 Console.Write("Fetching ffxiv plugin...");
-                webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=66", "FFXIV_ACT_Plugin.dll");
+                webclient.DownloadFile("https://advancedcombattracker.com/includes/page-download.php?id=73", "FFXIV_ACT_Plugin.dll");
                 Console.Write("Done!");
                 Console.WriteLine();
                 File.Copy(ffxivpluginpath, $"{installpath}/{ffxivpluginpath}", true);
